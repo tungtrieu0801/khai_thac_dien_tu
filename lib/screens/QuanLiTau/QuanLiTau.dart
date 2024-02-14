@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:originproject/components/myButton.dart';
+import 'package:originproject/components/widget_support.dart';
 
 class QuanLiTau extends StatefulWidget {
   @override
   _QuanLiTauState createState() => _QuanLiTauState();
 }
+
 class Boat {
   final int soHieuTau;
   final String thuyenTruong;
@@ -39,7 +40,8 @@ class _QuanLiTauState extends State<QuanLiTau> {
 
   // Hàm fetch dữ liệu từ API
   void fetchData() async {
-    final response = await http.get(Uri.parse('https://mobileapi-production-85cd.up.railway.app/api/boat_list/'));
+    final response = await http.get(Uri.parse(
+        'https://mobileapi-production-85cd.up.railway.app/api/boat_list/'));
 
     if (response.statusCode == 200) {
       // Nếu fetch thành công
@@ -47,22 +49,23 @@ class _QuanLiTauState extends State<QuanLiTau> {
 
       setState(() {
         // Cập nhật danh sách tàu từ API
-        boatList = jsonData.map((json) => Boat(
-          soHieuTau: json['so_hieu_tau'],
-          thuyenTruong: json['thuyen_truong'],
-          loaiThietBi: json['loai_thiet_bi'],
-          tenThietBi: json['ten_thiet_bi'],
-          imo: json['IMO'],
-          soKepChi: json['so_kep_chi'],
-          ngayNiemPhong: json['ngay_niem_phong'],
-        )).toList();
+        boatList = jsonData
+            .map((json) => Boat(
+                  soHieuTau: json['so_hieu_tau'],
+                  thuyenTruong: json['thuyen_truong'],
+                  loaiThietBi: json['loai_thiet_bi'],
+                  tenThietBi: json['ten_thiet_bi'],
+                  imo: json['IMO'],
+                  soKepChi: json['so_kep_chi'],
+                  ngayNiemPhong: json['ngay_niem_phong'],
+                ))
+            .toList();
       });
     } else {
       // Nếu fetch không thành công, xử lý lỗi ở đây
       print('Failed to load data. Status code: ${response.statusCode}');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -71,8 +74,7 @@ class _QuanLiTauState extends State<QuanLiTau> {
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Colors.red,
         centerTitle: true,
-        title: const Text(
-
+        title: Text(
           'Quản lí tàu',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
@@ -86,109 +88,92 @@ class _QuanLiTauState extends State<QuanLiTau> {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  ListTile(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-                    leading: Container(
-                      width: 50,
-                      height: 50,
-                      child: Image.asset(
-                        'lib/assets/images/bg.png',
+                  Card(
+                    color: Color(0xFFFEEAE6),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                      leading: Container(
                         width: 50,
                         height: 50,
-                        fit: BoxFit.cover,
+                        child: Image.asset(
+                          'lib/assets/images/bg.png',
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    ),
-                    title: Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Tàu ${boatList[index].soHieuTau}-2931278',
-                              style: TextStyle(
-                                fontSize: 17,
+                      title: Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Tàu ${boatList[index].soHieuTau}',
+                                style: TextStyle(
+                                  fontSize: 17,
+                                ),
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 6.0),
-                            child: MyButton(
-                              onTap: () {
-                                setState(() {
-                                  selectedTrainIndex =
-                                  (selectedTrainIndex == index) ? -1 : index;
-                                });
-                              },
-                              color: Colors.green,
-                              text: 'Thông tin',
-                              width: 100,
-                              height: 40,
-                              textStyle: TextStyle(color: Colors.white, fontSize: 15),
-                            ),
-                          ),
-                        ],
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)
+                                ),
+                                backgroundColor: Colors.green
+                              ),
+
+                                onPressed: () {
+                                  setState(() {
+                                    selectedTrainIndex = (selectedTrainIndex == index) ? -1 :index;
+                                  });
+                                },
+                                child: Text("Thông tin", style: AppWidget.buttonText(),)),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                   AnimatedContainer(
                     duration: Duration(milliseconds: 1),
-                    height: selectedTrainIndex == index ? 200 : 0,
+                    height: selectedTrainIndex == index ? 400 : 0,
                     curve: Curves.easeInOut,
                     child: selectedTrainIndex == index
                         ? Padding(
                       padding: const EdgeInsets.only(top: 8.0),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 30.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Số hiệu tàu ${boatList[index].soHieuTau}',
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                  ),
-                                ),
-                                Text(
-                                  'Thuyền trưởng: ${boatList[index].thuyenTruong}',
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                  ),
-                                ),
-                                Text(
-                                  'Loại thiết bị: ${boatList[index].loaiThietBi}',
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                  ),
-                                ),
-                                Text(
-                                  'Tên thiết bị: ${boatList[index].tenThietBi}',
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                  ),
-                                ),
-                                Text(
-                                  'Số imeil: ${boatList[index].imo}',
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                  ),
-                                ),
-                                Text(
-                                  "Số kẹp chì: ${boatList[index].soKepChi}",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                  ),
-                                ),
-                                Text(
-                                  "Ngày niêm phong: ${boatList[index].ngayNiemPhong}",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
+                      child: DataTable(
+                        columns: [
+                          DataColumn(label: Text('Thuộc tính')),
+                          DataColumn(label: Text('Giá trị')),
+                        ],
+                        rows: [
+                          DataRow(cells: [
+                            DataCell(Text('Số hiệu tàu')),
+                            DataCell(Text(boatList[index].soHieuTau.toString())),
+                          ]),
+                          DataRow(cells: [
+                            DataCell(Text('Thuyền trưởng')),
+                            DataCell(Text(boatList[index].thuyenTruong)),
+                          ]),
+                          DataRow(cells: [
+                            DataCell(Text('Loại thiết bị')),
+                            DataCell(Text(boatList[index].loaiThietBi)),
+                          ]),
+                          DataRow(cells: [
+                            DataCell(Text('Tên thiết bị')),
+                            DataCell(Text(boatList[index].tenThietBi)),
+                          ]),
+                          DataRow(cells: [
+                            DataCell(Text('Số imeil')),
+                            DataCell(Text(boatList[index].imo)),
+                          ]),
+                          DataRow(cells: [
+                            DataCell(Text('Số kẹp chì')),
+                            DataCell(Text(boatList[index].soKepChi)),
+                          ]),
+                          DataRow(cells: [
+                            DataCell(Text('Ngày niêm phong')),
+                            DataCell(Text(boatList[index].ngayNiemPhong)),
+                          ]),
                         ],
                       ),
                     )

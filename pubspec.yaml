@@ -85,6 +85,9 @@ flutter:
     - family: OpenSans
       fonts:
         - asset: lib/assets/fonts/OpenSans-Regular.ttf
+    - family: Roboto
+      fonts:
+        - asset: lib/assets/fonts/Roboto-Light.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
