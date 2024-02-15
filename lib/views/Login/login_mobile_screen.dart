@@ -2,11 +2,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart'as http;
-import '../../components/constants.dart';
-import '../../components/myButton.dart';
-import '../../components/my_text_field.dart';
-import '../../components/my_text_file_password.dart';
-import '../Home scrren/home_mobile_screen.dart';
+import '../../utils/constants.dart';
+import '../../widgets/myButton.dart';
+import '../../widgets/my_text_field.dart';
+import '../../widgets/my_text_file_password.dart';
+import '../TrangChu/home_mobile_screen.dart';
+
 
 
 class MobileLoginLayout extends StatefulWidget {

@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:originproject/components/widget_support.dart';
+
+import '../../utils/widget_support.dart';
 
 class QuanLiTau extends StatefulWidget {
   @override

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../../components/PoliMap.dart';
+import '../../widgets/PoliMap.dart';
 import '../LienHe/LienHe.dart';
 import '../Login/login_mobile_screen.dart';
 import '../NhatKiKhaiThac/NhatKiKhaiThac.dart';
@@ -16,8 +15,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
-
-  Set<Polyline> _polylines = Set<Polyline>();
   static List<Widget> _widgetOptions = <Widget>[
     PolylineMap(), // Thay thế GoogleMap bằng PolylineMap
     PolylineMap(),

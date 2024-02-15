@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:originproject/components/myButton.dart';
 
-import '../../components/PoliMap.dart';
-import '../../components/dropdown.dart';
+import '../../widgets/PoliMap.dart';
+import '../../widgets/dropdown.dart';
+import '../../widgets/myButton.dart';
 
 class TheoDoiHaiTrinh extends StatefulWidget {
   final String tenTau;
