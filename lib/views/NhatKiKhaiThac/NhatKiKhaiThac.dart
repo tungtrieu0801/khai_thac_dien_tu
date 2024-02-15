@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-import 'package:originproject/screens/ChuyenTai/ChuyenTai.dart';
+import '../ChuyenTai/ChuyenTai.dart';
 
 class NhatKi extends StatefulWidget {
   const NhatKi({Key? key}) : super(key: key);

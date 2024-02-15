@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:originproject/screens/LienHe/LienHe.dart';
-
-import 'package:originproject/screens/Login/login_mobile_screen.dart';
-import 'package:originproject/screens/NhatKiKhaiThac/NhatKiKhaiThac.dart';
-import 'package:originproject/screens/TheoDoiHaiTrinh/TheoDoiHaiTrinh.dart';
-
 import '../../components/PoliMap.dart';
+import '../LienHe/LienHe.dart';
+import '../Login/login_mobile_screen.dart';
+import '../NhatKiKhaiThac/NhatKiKhaiThac.dart';
 import '../QuanLiTau/QuanLiTau.dart';
+import '../TheoDoiHaiTrinh/TheoDoiHaiTrinh.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
