@@ -24,9 +24,6 @@ class _NhatKiState extends State<NhatKi> {
   @override
   void initState() {
     super.initState();
-    selectedOption1 = null;
-    selectedOption2 = null;
-    selectedOption3 = null;
     fetchData();
   }
 
@@ -43,8 +40,9 @@ class _NhatKiState extends State<NhatKi> {
 
         setState(() {
           selectedOption1 = options1.isNotEmpty ? options1.keys.first : null;
-          updateOptions2();
-          selectedOption3 = options3[selectedOption1!]?.first['me_ca'].toString();
+          selectedOption2 = '2';
+          selectedOption3 = '1'; // Set the default value for Mẻ cá to '1'
+          updateDanhSachMeCa();
         });
       } else {
         throw Exception('Failed to load data');
@@ -100,14 +98,6 @@ class _NhatKiState extends State<NhatKi> {
     return result;
   }
 
-  void updateOptions2() {
-    if (selectedOption1 != null) {
-      setState(() {
-        selectedOption2 = options2[selectedOption1!]?.isNotEmpty == true ? options2[selectedOption1!]!.first : null;
-      });
-    }
-  }
-
   void updateDanhSachMeCa() {
     if (selectedOption1 != null && selectedOption3 != null) {
       danhSachMeCa = options3[selectedOption1!]!.where((meCa) => meCa['me_ca'].toString() == selectedOption3!).toList();
@@ -154,8 +144,8 @@ class _NhatKiState extends State<NhatKi> {
                             onChanged: (String? value) {
                               setState(() {
                                 selectedOption1 = value;
-                                updateOptions2();
-                                selectedOption3 = null;
+                                selectedOption2 = '2';
+                                selectedOption3 = '1'; // Reset Mẻ cá to '1' when changing tàu
                                 updateDanhSachMeCa();
                               });
                             },
@@ -182,7 +172,7 @@ class _NhatKiState extends State<NhatKi> {
                         ),
                         Padding(
                           padding: EdgeInsets.only(left: screenSize.width * 0.03),
-                          child: Text(selectedOption2 ?? 'N/A'),
+                          child: Text(selectedOption2 ?? '1', style: TextStyle(fontSize: 16),),
                         ),
                       ],
                     ),
@@ -263,7 +253,7 @@ class _NhatKiState extends State<NhatKi> {
               color: Colors.black,
             ),
             SizedBox(height: screenSize.height * 0.03),
-            Text('Thông tin mẻ cá:', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('Thông tin mẻ cá', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             SizedBox(height: 8),
             if (selectedOption3 != null)
               Column(
@@ -272,8 +262,6 @@ class _NhatKiState extends State<NhatKi> {
                   margin: EdgeInsets.all(8),
                   child: Column(
                     children: [
-                      Text('Mẻ cá ${meCa['me_ca']}'),
-                      Divider(),
                       Column(
                         children: (meCa['du_lieu_me_ca'] as List<Map<String, dynamic>>)
                             .map((duLieu) => ListTile(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../widgets/PoliMap.dart';
 import '../../widgets/dropdown.dart';
 import '../../widgets/myButton.dart';
@@ -18,7 +17,6 @@ class _TheoDoiHaiTrinhState extends State<TheoDoiHaiTrinh> {
   String selectedChuyenBien = '1';
   DateTime? _startDate1;
   DateTime? _startDate2;
-
 
   Future<void> _selectStartDate1(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -71,12 +69,9 @@ class _TheoDoiHaiTrinhState extends State<TheoDoiHaiTrinh> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery
-        .of(context)
-        .size;
+    Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
@@ -90,380 +85,351 @@ class _TheoDoiHaiTrinhState extends State<TheoDoiHaiTrinh> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(left: screenSize.height * 0.035),
-            child: Row(
-              children: [
-                Column(
-                  children: [
-                    Image.asset(
-                      'lib/assets/images/bg.png',
-                      width: screenSize.height * 0.04,
-                      height: screenSize.height * 0.035,
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  width: screenSize.height * 0.02,
-                ),
-                Column(
-                  children: [
-                    Text(
-                      "Số hiệu tàu",
-                      style: TextStyle(fontSize: screenSize.width * 0.045),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: screenSize.width * 0.03),
-                      child: CustomDropdown(
-                        items: ['BĐ-29283', 'TÀU-12345', 'ABC-98765'],
-                        selectedValue: selectedSoHieuTau,
-                        onChanged: (String value) {
-                          setState(() {
-                            selectedSoHieuTau = value;
-                          });
-                        },
+      body: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: screenSize.height * 0.035),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Column(
+                    children: [
+                      Image.asset(
+                        'lib/assets/images/bg.png',
+                        width: screenSize.height * 0.04,
+                        height: screenSize.height * 0.035,
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                  SizedBox(
+                    width: screenSize.height * 0.02,
+                  ),
+                  Column(
+                    children: [
+                      Text(
+                        "Số hiệu tàu",
+                        style: TextStyle(fontSize: screenSize.width * 0.045),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: screenSize.width * 0.03),
+                        child: CustomDropdown(
+                          items: ['BĐ-29283', 'TÀU-12345', 'ABC-98765'],
+                          selectedValue: selectedSoHieuTau,
+                          onChanged: (String value) {
+                            setState(() {
+                              selectedSoHieuTau = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-                left: screenSize.width * 0.1, top: screenSize.width * 0.036),
-            child: Row(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Column(
-                  children: [
-                    Image.asset(
-                      'lib/assets/images/location.png',
-                      width: screenSize.width * 0.05,
-                      height: screenSize.width * 0.055,
-                      color: Colors.green,
-                    ),
-                  ],
+                Container(
+                  height: MediaQuery.of(context).size.width / 4,
+                  width: MediaQuery.of(context).size.width / 3,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Row(
+                        children: [
+                          Image.asset(
+                            'lib/assets/images/location.png',
+                            width: screenSize.width * 0.05,
+                            height: screenSize.width * 0.055,
+                            color: Colors.green,
+                          ),
+                          Text(
+                            "Ngày bắt đầu",
+                            style:
+                                TextStyle(fontSize: screenSize.width * 0.045),
+                          )
+                        ],
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              child: _startDate1 == null
+                                  ? Padding(
+                                      padding: EdgeInsets.only(
+                                          left: screenSize.width * 0.02),
+                                      child: Text(
+                                        'Chọn ngày',
+                                        style: TextStyle(
+                                            fontSize: screenSize.width * 0.03,
+                                            color: Colors.black),
+                                      ),
+                                    )
+                                  : Padding(
+                                      padding: EdgeInsets.only(
+                                          left: screenSize.width * 0.03),
+                                      child: Text(
+                                        '${_startDate1!.day}/${_startDate1!.month}/${_startDate1!.year} ',
+                                        style: TextStyle(
+                                            fontSize: screenSize.width * 0.03),
+                                      ),
+                                    ),
+                            ),
+                            TextButton(
+                              onPressed: () => _selectStartDate1(context),
+                              child: Icon(Icons.arrow_drop_down,
+                                  size: screenSize.width * 0.08,
+                                  color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                Column(
-                  children: [
-                    Text(
-                      "Ngày bắt đầu",
-                      style: TextStyle(fontSize: screenSize.width * 0.045),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  width: screenSize.width * 0.13,
-                ),
-                Column(
-                  children: [
-                    Image.asset(
-                      'lib/assets/images/location.png',
-                      width: screenSize.width * 0.05,
-                      height: screenSize.width * 0.055,
-                    )
-                  ],
-                ),
-                Column(
-                  children: [
-                    Text(
-                      "Ngày kết thúc",
-                      style: TextStyle(fontSize: screenSize.width * 0.045),
-                    )
-                  ],
+                Container(
+                  height: MediaQuery.of(context).size.width / 4,
+                  width: MediaQuery.of(context).size.width / 3,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Row(
+                        children: [
+                          Image.asset(
+                            'lib/assets/images/location.png',
+                            width: screenSize.width * 0.05,
+                            height: screenSize.width * 0.055,
+                            color: Colors.red,
+                          ),
+                          Text(
+                            "Ngày kết thúc",
+                            style:
+                                TextStyle(fontSize: screenSize.width * 0.045),
+                          )
+                        ],
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                          borderRadius: BorderRadius.circular(9),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              child: _startDate2 == null
+                                  ? Padding(
+                                      padding: EdgeInsets.only(
+                                          left: screenSize.height * 0.01),
+                                      child: Text(
+                                        'Chọn ngày',
+                                        style: TextStyle(
+                                            fontSize: screenSize.width * 0.03,
+                                            color: Colors.black),
+                                      ),
+                                    )
+                                  : Padding(
+                                      padding: EdgeInsets.only(
+                                          left: screenSize.width * 0.03),
+                                      child: Text(
+                                        '${_startDate2!.day}/${_startDate2!.month}/${_startDate2!.year} ',
+                                        style: TextStyle(
+                                            fontSize: screenSize.width * 0.03),
+                                      ),
+                                    ),
+                            ),
+                            TextButton(
+                              onPressed: () => _selectStartDate2(context),
+                              child: Icon(Icons.arrow_drop_down,
+                                  size: screenSize.width * 0.08,
+                                  color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 )
               ],
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-                left: screenSize.width * 0.07, top: screenSize.width * 0.040),
-            child: Row(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(8),
+            Container(
+              padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width / 2.8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  MyButton(
+                    onTap: () {
+                      // Kiểm tra xem cả ngày bắt đầu và ngày kết thúc đã được chọn hay chưa
+                      if (_startDate1 != null && _startDate2 != null) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Thông tin tìm kiếm'),
+                              content: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                      'Ngày bắt đầu: ${_startDate1!.day}/${_startDate1!.month}/${_startDate1!.year}'),
+                                  Text(
+                                      'Ngày kết thúc: ${_startDate2!.day}/${_startDate2!.month}/${_startDate2!.year}'),
+                                ],
+                              ),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Đóng'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Lỗi'),
+                              content: Text(
+                                  'Vui lòng chọn cả ngày bắt đầu và ngày kết thúc.'),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Đóng'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
+                    color: Colors.red,
+                    text: "Tìm kiếm",
+                    width: screenSize.width * 0.26,
+                    height: screenSize.height * 0.045,
+                    textStyle: TextStyle(
+                        fontSize: screenSize.width * 0.042,
+                        color: Colors.white),
                   ),
-                  child: Row(
-                    children: [
-                      Container(
-                        child: _startDate1 == null
-                            ? Padding(
-                          padding: EdgeInsets.only(left: screenSize.width *
-                              0.02),
-                          child: Text(
-                            'Chọn ngày',
-                            style: TextStyle(fontSize: screenSize.width * 0.035,
-                                color: Colors.black),
-                          ),
-                        )
-                            : Padding(
-                          padding: EdgeInsets.only(left: 10.0),
-                          child: Text(
-                            '${_startDate1!.day}/${_startDate1!
-                                .month}/${_startDate1!.year} ',
-                            style: TextStyle(fontSize: screenSize.width * 0.035),
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () => _selectStartDate1(context),
-                        child: Icon(Icons.arrow_drop_down,
-                            size: screenSize.width * 0.08, color: Colors.black),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(width: screenSize.width * 0.07),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(9),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        child: _startDate2 == null
-                            ? Padding(
-                          padding: EdgeInsets.only(left: screenSize.height *
-                              0.02),
-                          child: Text(
-                            'Chọn ngày',
-                            style: TextStyle(fontSize: screenSize.width * 0.035,
-                                color: Colors.black),
-                          ),
-                        )
-                            : Padding(
-                          padding: EdgeInsets.only(left: screenSize.width *
-                              0.04),
-                          child: Text(
-                            '${_startDate2!.day}/${_startDate2!
-                                .month}/${_startDate2!.year} ',
-                            style: TextStyle(fontSize: screenSize.width * 0.035),
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () => _selectStartDate2(context),
-                        child: Icon(Icons.arrow_drop_down,
-                            size: screenSize.width * 0.08, color: Colors.black),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-                left: screenSize.width * 0.35, top: screenSize.width * 0.05),
-            child: Row(
-              children: [
-                Column(
-                  children: [
-                    MyButton(
-                      onTap: () {
-                        // Kiểm tra xem cả ngày bắt đầu và ngày kết thúc đã được chọn hay chưa
-                        if (_startDate1 != null && _startDate2 != null) {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('Thông tin tìm kiếm'),
-                                content: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              insetPadding: EdgeInsets.all(25),
+                              content: Container(
+                                width: 600.0,
+                                height: 900.0,
+                                child: Column(
                                   children: [
+                                    SizedBox(
+                                      height: screenSize.height * 0.02,
+                                    ),
                                     Text(
-                                        'Ngày bắt đầu: ${_startDate1!
-                                            .day}/${_startDate1!
-                                            .month}/${_startDate1!.year}'),
-                                    Text(
-                                        'Ngày kết thúc: ${_startDate2!
-                                            .day}/${_startDate2!
-                                            .month}/${_startDate2!.year}'),
+                                      'BĐ-92130-TS',
+                                      style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: screenSize.width * 0.05,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBox(
+                                      height: screenSize.height * 0.02,
+                                    ),
+                                    Container(
+                                      height: 1,
+                                      width: screenSize.width * 0.7,
+                                      color: Colors.black,
+                                    ),
+                                    DataTable(
+                                      columns: [
+                                        DataColumn(label: Text('Thời gian')),
+                                        DataColumn(label: Text('Vị trí')),
+                                      ],
+                                      rows: [
+                                        DataRow(cells: [
+                                          DataCell(Text('1AM')),
+                                          DataCell(Text(
+                                              "Vị trí 1")),
+                                        ]),
+                                        DataRow(cells: [
+                                          DataCell(Text('2AM')),
+                                          DataCell(Text(
+                                              "Vị trí 2")),
+                                        ]),
+                                        DataRow(cells: [
+                                          DataCell(Text('3AM')),
+                                          DataCell(Text(
+                                              "Vị trí 3")),
+                                        ]),
+                                        DataRow(cells: [
+                                          DataCell(Text('4AM')),
+                                          DataCell(Text(
+                                              "Vị trí 4")),
+                                        ]),DataRow(cells: [
+                                          DataCell(Text('5AM')),
+                                          DataCell(Text(
+                                              "Vị trí 5")),
+                                        ]),
+
+                                      ],
+                                    ),
                                   ],
                                 ),
-                                actions: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text('Đóng'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('Lỗi'),
-                                content: Text(
-                                    'Vui lòng chọn cả ngày bắt đầu và ngày kết thúc.'),
-                                actions: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text('Đóng'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        }
-                      },
-                      color: Colors.red,
-                      text: "Tìm kiếm",
-                      width: screenSize.width * 0.26,
-                      height: screenSize.height * 0.045,
-                      textStyle: TextStyle(fontSize: screenSize.width * 0.042,
-                          color: Colors.white),
-                    ),
-                  ],
-                ),
-                SizedBox(width: screenSize.width * 0.22,),
-                Column(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        showDialog(
-                            context: context, builder: (BuildContext context){
-                              return AlertDialog(
-                                insetPadding: EdgeInsets.all(25),
-                                content: Container(
-                                  width: 600.0,
-                                  height: 900.0,
-                                  child: Column(
-                                    children: [
-                                      SizedBox(height: screenSize.height*0.02,),
-                                      Text('BĐ-92130-TS',style: TextStyle(
-                                        color: Colors.red,fontSize: screenSize.width*0.05,fontWeight: FontWeight.bold
-                                      ),),
-                                      SizedBox(height: screenSize.height*0.02,),
-                                        Text('14/01/2022---------------4444--------------19`201N',style: TextStyle(wordSpacing: screenSize.width*0.07),),
-                                      SizedBox(height: screenSize.height*0.02,),
-                                      Container(
-                                        height: 1,
-                                        width: screenSize.width*0.7,
-                                        color: Colors.black,
-                                      ),
-                                      SizedBox(height: screenSize.height*0.02,),
-                                      Text('14/01/2022-----------------------------19`201N',style: TextStyle(wordSpacing: screenSize.width*0.07),),
-                                      SizedBox(height: screenSize.height*0.02,),
-                                      Container(
-                                        height: 1,
-                                        width: screenSize.width*0.7,
-                                        color: Colors.black,
-                                      ),
-                                      SizedBox(height: screenSize.height*0.02,),
-                                      Text('14/01/2022-----------------------------19`201N',style: TextStyle(wordSpacing: screenSize.width*0.07),),
-                                      SizedBox(height: screenSize.height*0.02,),
-                                      Container(
-                                        height: 1,
-                                        width: screenSize.width*0.7,
-                                        color: Colors.black,
-                                      ),
-                                      SizedBox(height: screenSize.height*0.02,),
-                                      Text('14/01/2022-----------------------------19`201N',style: TextStyle(wordSpacing: screenSize.width*0.07),),
-                                      SizedBox(height: screenSize.height*0.02,),
-                                      Container(
-                                        height: 1,
-                                        width: screenSize.width*0.7,
-                                        color: Colors.black,
-                                      ),
-                                      SizedBox(height: screenSize.height*0.02,),
-                                      Text('14/01/2022-----------------------------19`201N',style: TextStyle(wordSpacing: screenSize.width*0.07),),
-                                      SizedBox(height: screenSize.height*0.02,),
-                                      Container(
-                                        height: 1,
-                                        width: screenSize.width*0.7,
-                                        color: Colors.black,
-                                      ),
-                                      SizedBox(height: screenSize.height*0.02,),
-                                      Text('14/01/2022-----------------------------19`201N',style: TextStyle(wordSpacing: screenSize.width*0.07),),
-                                      SizedBox(height: screenSize.height*0.02,),
-                                      Container(
-                                        height: 1,
-                                        width: screenSize.width*0.7,
-                                        color: Colors.black,
-                                      )
-                                      ,SizedBox(height: screenSize.height*0.02,),
-                                      Text('14/01/2022----------------------------19`201N',style: TextStyle(wordSpacing: screenSize.width*0.07),),
-                                      SizedBox(height: screenSize.height*0.02,),
-                                      Container(
-                                        height: 1,
-                                        width: screenSize.width*0.7,
-                                        color: Colors.black,
-                                      )
-                                      ,SizedBox(height: screenSize.height*0.02,),
-                                      Text('14/01/2022----------------------------19`201N',style: TextStyle(wordSpacing: screenSize.width*0.07),),
-                                      SizedBox(height: screenSize.height*0.02,),
-                                      Container(
-                                        height: 1,
-                                        width: screenSize.width*0.7,
-                                        color: Colors.black,
-                                      )
-                                      ,SizedBox(height: screenSize.height*0.02,),
-                                      Text('14/01/2022----------------------------19`201N',style: TextStyle(wordSpacing: screenSize.width*0.07),),
-                                      SizedBox(height: screenSize.height*0.02,),
-                                      Container(
-                                        height: 1,
-                                        width: screenSize.width*0.7,
-                                        color: Colors.black,
-                                      )
-                                      ,SizedBox(height: screenSize.height*0.02,),
-                                      Text('14/01/2022-----------------------------19`201N',style: TextStyle(wordSpacing: screenSize.width*0.07),),
-                                      SizedBox(height: screenSize.height*0.02,),
-                                      Container(
-                                        height: 1,
-                                        width: screenSize.width*0.7,
-                                        color: Colors.black,
-                                      )
-
-                                    ],
-                                  ),
+                              ),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Đóng'),
                                 ),
-                                actions: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text('Đóng'),
-                                  ),
-                                ],
-                              );
-                        });
-                      },
+                              ],
+                            );
+                          });
+                    },
+                    child: Container(
+                      padding: EdgeInsets.only(right: screenSize.width * 0.05),
                       child: Column(
                         children: [
-                          Image.asset('lib/assets/images/menu_hi.png', width: screenSize.width*0.11,height: screenSize.height*0.05,)
+                          Image.asset(
+                            'lib/assets/images/menu_hi.png',
+                            width: screenSize.width * 0.1,
+                            height: screenSize.height * 0.05,
+                          )
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 25.0),
-            child: Container(
-              height: 510,
-              child: PolylineMap(),
+                  ),
+                ],
               ),
             ),
-        ],
+            Padding(
+              padding: const EdgeInsets.only(top: 25.0),
+              child: Container(
+                height: 540,
+                child: PolylineMap(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

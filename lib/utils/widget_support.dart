@@ -9,4 +9,13 @@ class AppWidget {
         fontFamily: 'Roboto'
     );
   }
+
+  static TextStyle bigText(){
+    return TextStyle(
+        color: Colors.black,
+        fontSize: 25.0,
+        fontWeight: FontWeight.w700,
+        fontFamily: 'Roboto'
+    );
+  }
 }

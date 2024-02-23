@@ -16,7 +16,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
   static List<Widget> _widgetOptions = <Widget>[
-    PolylineMap(), // Thay thế GoogleMap bằng PolylineMap
+    PolylineMap(),
     PolylineMap(),
     PolylineMap(),
     PolylineMap(),
@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 15),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -83,11 +83,8 @@ class _MyHomePageState extends State<MyHomePage> {
               title: const Text('Tàu quản lí',style: TextStyle(color: Colors.black),),
               selected: _selectedIndex == 0,
               onTap: () {
-                // Update the state of the app
                 _onItemTapped(0);
-                // Then close the drawer
                 Navigator.pop(context);
-                // Navigate to the QuanLiTau page
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => QuanLiTau()),
@@ -110,9 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
               title: const Text('Theo dõi hải trình',style: TextStyle(color: Colors.black)),
               selected: _selectedIndex == 1,
               onTap: () {
-                // Update the state of the app
                 _onItemTapped(1);
-                // Then close the drawer
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -137,9 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
               title: const Text('Nhật kí khai thác',style: TextStyle(color: Colors.black)),
               selected: _selectedIndex == 2,
               onTap: () {
-                // Update the state of the app
                 _onItemTapped(2);
-                // Then close the drawer
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -163,9 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
               title: const Text('Liên hệ',style: TextStyle(color: Colors.black)),
               selected: _selectedIndex == 3,
               onTap: () {
-                // Update the state of the app
                 _onItemTapped(3);
-                // Then close the drawer
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -189,9 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
               title: const Text('Đăng xuất',style: TextStyle(color: Colors.black)),
               selected: _selectedIndex == 4,
               onTap: () {
-                // Update the state of the app
                 _onItemTapped(4);
-                // Then close the drawer
                 Navigator.pop(context);
                 Navigator.push(
                   context,
