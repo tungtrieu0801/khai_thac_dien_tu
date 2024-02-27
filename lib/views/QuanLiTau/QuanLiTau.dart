@@ -97,7 +97,7 @@ class _QuanLiTauState extends State<QuanLiTau> {
                   ),
                   AnimatedContainer(
                     duration: Duration(milliseconds: 1),
-                    height: selectedTrainIndex == index ? 400 : 0,
+                    height: selectedTrainIndex == index ? 500 : 0,
                     curve: Curves.easeInOut,
                     child: selectedTrainIndex == index
                         ? Padding(
@@ -136,6 +136,14 @@ class _QuanLiTauState extends State<QuanLiTau> {
                                 DataRow(cells: [
                                   DataCell(Text('Ngày niêm phong')),
                                   DataCell(Text(boatList[index].ngayNiemPhong)),
+                                ]),
+                                DataRow(cells: [
+                                  DataCell(Text("Ngày đăng kí")),
+                                  DataCell(Text(boatList[index].ngayDangKi))
+                                ]),
+                                DataRow(cells: [
+                                  DataCell(Text("Ngày hết hạnđăng kí")),
+                                  DataCell(Text(boatList[index].ngayHetHanDangKy))
                                 ]),
                               ],
                             ),

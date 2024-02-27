@@ -23,7 +23,7 @@ class _MobileLoginLayoutState extends State<MobileLoginLayout> {
   final passwordController = TextEditingController();
   Future<void> login() async {
     if (!usernameController.text.isEmpty && !passwordController.text.isEmpty) {
-      var response = await http.post(Uri.parse("https://mobileapi-production-85cd.up.railway.app/login/"),
+      var response = await http.post(Uri.parse("https://tttn2024-production.up.railway.app/mobile-api/login/"),
           body: jsonEncode({
             'username': usernameController.text,
             'password': passwordController.text,

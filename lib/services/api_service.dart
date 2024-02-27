@@ -6,10 +6,10 @@ import '../models/boatModel.dart';
 class ApiService {
   Future<void> fetchData(Function(List<Boat>) onDataLoaded) async {
     final response = await http.get(Uri.parse(
-        'https://mobileapi-production-85cd.up.railway.app/api/boat_list/'));
+        'https://tttn2024-production.up.railway.app/mobile-api/realtime-location/'));
 
     if (response.statusCode == 200) {
-      final List<dynamic> jsonData = json.decode(response.body)['boat_list'];
+      final List<dynamic> jsonData = json.decode(response.body)['ship_list'];
 
       List<Boat> boatList = jsonData
           .map((json) => Boat(
@@ -20,6 +20,8 @@ class ApiService {
         imo: json['IMO'],
         soKepChi: json['so_kep_chi'],
         ngayNiemPhong: json['ngay_niem_phong'],
+        ngayDangKi: json['ngay_dang_ky'],
+        ngayHetHanDangKy: json['ngay_het_han_dang_ky'],
       ))
           .toList();
 
