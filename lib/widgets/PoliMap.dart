@@ -1,5 +1,28 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
+class ShipLocation {
+  final String shipCode;
+  final String captain;
+  final Location location; // Thêm thông tin vị trí
+  final String time;
+
+  ShipLocation({
+    required this.shipCode,
+    required this.captain,
+    required this.location,
+    required this.time,
+  });
+}
+
+class Location {
+  final double latitude;
+  final double longitude;
+
+  Location({required this.latitude, required this.longitude});
+}
 
 class PolylineMap extends StatefulWidget {
   @override
@@ -9,15 +32,41 @@ class PolylineMap extends StatefulWidget {
 class _PolylineMapState extends State<PolylineMap> {
   late GoogleMapController mapController;
   List<LatLng> polylineCoordinates = [];
-  List<Marker> markers = [];
-
+  List<ShipLocation> shipLocations = [];
+  @override
+  void initState() {
+    super.initState();
+    fetchShipLocations();
+  }
+  Future<void> fetchShipLocations() async {
+    final response = await http.get(Uri.parse('https://tttn2024-production.up.railway.app/mobile-api/realtime-location/'));
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      final List<dynamic> shipList = data['ship_list'];
+      setState(() {
+        shipLocations = shipList
+            .map((shipData) => ShipLocation(
+          shipCode: shipData['so_hieu_tau'],
+          captain: shipData['thuyen_truong'],
+          location: Location(
+            latitude: shipData['location']['lat'],
+            longitude: shipData['location']['lng'],
+          ),
+          time: shipData['time'],
+        ))
+            .toList();
+      });
+    } else {
+      throw Exception('Failed to load ship locations');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: GoogleMap(
         onMapCreated: _onMapCreated,
+        markers: _createMarkers(),
         polylines: _createPolylines(),
-        markers: Set<Marker>.from(markers),
         initialCameraPosition: CameraPosition(
           target: LatLng(14.0583, 108.2772),
           zoom: 6.0,
@@ -95,69 +144,8 @@ class _PolylineMapState extends State<PolylineMap> {
       polylineCoordinates.add(LatLng(10.4267, 103.82));
       polylineCoordinates.add(LatLng(10.5, 103.79));
       polylineCoordinates.add(LatLng(10.54, 103.8033));
-
-      _addMarker(LatLng(21.532618, 108.056009), "Tàu 1","Trieu Thanh Tung", 'lib/assets/images/bg13.png');
-      _addMarker(LatLng(6.35, 106.6605), "Tàu 2","Trieu Thanh Tung", 'lib/assets/images/bg13.png');
-      _addMarker(LatLng(17.8225, 116.99), "Tàu 3","Trieu Thanh Tung", 'lib/assets/images/bg13.png');
-      _addMarker(LatLng(19.743, 117.6259), "Tàu 4","Trieu Thanh Tung", 'lib/assets/images/bg13.png');
-      _addMarker(LatLng(17.4598, 111.2899), "Tàu 5","Trieu Thanh Tung", 'lib/assets/images/bg13.png');
-      _addMarker(LatLng(19.2683, 107.19), "Tàu 6","Trieu Thanh Tung", 'lib/assets/images/bg13.png');
-
-
     });
   }
-
-  void _addMarker(LatLng position, String nameship, String namethuyen, String iconPath) async {
-    final BitmapDescriptor markerIcon =
-    await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(30, 30)), 'lib/assets/images/bg13.png');
-
-    markers.add(
-      Marker(
-        markerId: MarkerId("$nameship-$namethuyen"),
-        position: position,
-        icon: markerIcon,
-        infoWindow: InfoWindow(),
-        onTap: () {
-          // Xử lý khi Marker được bấm
-          _onMarkerTapped(nameship, namethuyen);
-        },
-      ),
-    );
-  }
-
-
-  void _onMarkerTapped(String nameship,String namethuyen) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Thông tin thuyền"),
-          content: Container(
-            height: 200,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Tên thuyền: $nameship"),
-                SizedBox(height: 8), // Khoảng cách giữa các dòng
-                Text("Tên thuyền trưởng: $namethuyen"),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Đóng hộp thoại khi nhấn nút
-              },
-              child: Text("Đóng"),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-
-
   Set<Polyline> _createPolylines() {
     Set<Polyline> polylines = Set<Polyline>();
     if (polylineCoordinates.isNotEmpty) {
@@ -171,4 +159,85 @@ class _PolylineMapState extends State<PolylineMap> {
     }
     return polylines;
   }
+
+  Set<Marker> _createMarkers() {
+    Set<Marker> markers = Set<Marker>();
+    for (ShipLocation shipLocation in shipLocations) {
+      BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(size: Size(48, 48)), // Adjust the size as needed
+        'lib/assets/images/bg13.png',
+      ).then((bitmapDescriptor) {
+        markers.add(
+          Marker(
+            markerId: MarkerId(shipLocation.shipCode),
+            icon: bitmapDescriptor,
+            position: LatLng(shipLocation.location.latitude, shipLocation.location.longitude),
+            onTap: () => _onMarkerTapped(
+              shipLocation.shipCode,
+              shipLocation.captain,
+              shipLocation.location,
+              shipLocation.time,
+            ),
+          ),
+        );
+
+
+      });
+    }
+    return markers;
+  }
+
+  void _onMarkerTapped(String nameship, String namethuyen, Location location, String updateTime) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Thông tin thuyền"),
+          content: Container(
+            height: 200,
+            child: DataTable(
+              columns: [
+                DataColumn(label: Text('Thuộc tính')),
+                DataColumn(label: Text('Thông tin')),
+              ],
+              rows: [
+                DataRow(cells: [
+                  DataCell(Text('Tên thuyền')),
+                  DataCell(Text(nameship)),
+                ]),
+                DataRow(cells: [
+                  DataCell(Text('Tên thuyền trưởng')),
+                  DataCell(Text(namethuyen)),
+                ]),
+                DataRow(cells: [
+                  DataCell(Text('Vị trí')),
+                  DataCell(Text('${location.latitude}, ${location.longitude}')),
+                ]),
+                DataRow(cells: [
+                  DataCell(Text('Thời gian cập nhật')),
+                  DataCell(Text(updateTime)),
+                ]),
+              ],
+            ),
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(top: 18.0),
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Đóng hộp thoại khi nhấn nút
+                },
+                child: Text("Đóng"),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+
+
+
 }
