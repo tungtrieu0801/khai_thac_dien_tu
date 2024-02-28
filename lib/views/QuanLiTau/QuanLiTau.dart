@@ -21,6 +21,7 @@ class _QuanLiTauState extends State<QuanLiTau> {
     apiService.fetchData((List<Boat> data) {
       setState(() {
         boatList = data;
+        print(data);
       });
     });
   }

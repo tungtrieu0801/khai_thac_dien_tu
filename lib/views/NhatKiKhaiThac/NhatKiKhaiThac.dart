@@ -1,280 +1,222 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-import '../ChuyenTai/ChuyenTai.dart';
+import 'package:originproject/utils/widget_support.dart';
+
+class Ship {
+  final String shipCode;
+  final List<Voyage> voyages;
+
+  Ship({required this.shipCode, required this.voyages});
+}
+
+class Voyage {
+  final int voyageNumber;
+  final List<FishBatch> fishBatches;
+
+  Voyage({required this.voyageNumber, required this.fishBatches});
+}
+
+class FishBatch {
+  final int batchNumber;
+  final List<FishData> fishDataList;
+
+  FishBatch({required this.batchNumber, required this.fishDataList});
+}
+
+class FishData {
+  final String fishType;
+  final int weight;
+
+  FishData({required this.fishType, required this.weight});
+}
 
 class NhatKi extends StatefulWidget {
-  const NhatKi({Key? key}) : super(key: key);
-
   @override
   _NhatKiState createState() => _NhatKiState();
 }
 
 class _NhatKiState extends State<NhatKi> {
-  String? selectedOption1;
-  String? selectedOption2;
-  String? selectedOption3;
-
-  Map<String, List<String>> options1 = {};
-  Map<String, List<String>> options2 = {};
-  Map<String, List<Map<String, dynamic>>> options3 = {};
-
-  List<Map<String, dynamic>> danhSachMeCa = [];
+  late Future<List<Ship>> ships;
+  Ship? selectedShip;
+  Voyage? selectedVoyage;
+  bool showImage = true; // Initial state is to show the image
 
   @override
   void initState() {
     super.initState();
-    fetchData();
+    ships = fetchShips();
   }
 
-  Future<void> fetchData() async {
-    try {
-      final response = await http.get(Uri.parse('https://mobileapi-production-85cd.up.railway.app/api/log/'));
-
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body)['data'];
-
-        options1 = processOptions1(data);
-        options2 = processOptions2(data);
-        options3 = processOptions3(data);
-
-        setState(() {
-          selectedOption1 = options1.isNotEmpty ? options1.keys.first : null;
-          selectedOption2 = '2';
-          selectedOption3 = '1'; // Set the default value for Mẻ cá to '1'
-          updateDanhSachMeCa();
-        });
-      } else {
-        throw Exception('Failed to load data');
-      }
-    } catch (error) {
-      print('Error fetching data: $error');
-    }
-  }
-
-  Map<String, List<String>> processOptions1(List<dynamic> data) {
-    Map<String, List<String>> result = {};
-
-    for (var item in data) {
-      result[item['so_hieu_tau'].toString()] = [item['so_hieu_tau'].toString()];
-    }
-
-    return result;
-  }
-
-  Map<String, List<String>> processOptions2(List<dynamic> data) {
-    Map<String, List<String>> result = {};
-
-    for (var item in data) {
-      List<dynamic>? danhSachChuyenBien = item['danh_sach_chuyen_bien'];
-      if (danhSachChuyenBien != null && danhSachChuyenBien.isNotEmpty) {
-        result[item['so_hieu_tau']] = danhSachChuyenBien.map<String>((e) => e['chuyen_bien'].toString()).toList();
-      }
-    }
-
-    return result;
-  }
-
-  Map<String, List<Map<String, dynamic>>> processOptions3(List<dynamic> data) {
-    Map<String, List<Map<String, dynamic>>> result = {};
-
-    for (var item in data) {
-      List<dynamic>? danhSachMeCaApi = item['danh_sach_me_ca'];
-      if (danhSachMeCaApi != null && danhSachMeCaApi.isNotEmpty) {
-        List<Map<String, dynamic>> danhSachMeCa = [];
-        for (var meCa in danhSachMeCaApi) {
-          List<dynamic>? duLieuMeCaApi = meCa['du_lieu_me_ca'];
-          if (duLieuMeCaApi != null && duLieuMeCaApi.isNotEmpty) {
-            danhSachMeCa.add({
-              'me_ca': meCa['me_ca'],
-              'du_lieu_me_ca': List<Map<String, dynamic>>.from(duLieuMeCaApi),
-            });
+  Future<List<Ship>> fetchShips() async {
+    final response = await http.get(Uri.parse('https://tttn2024-production.up.railway.app/mobile-api/mining-log/'));
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = json.decode(response.body)['data'];
+      List<Ship> shipList = [];
+      for (var shipData in jsonData) {
+        List<Voyage> voyageList = [];
+        for (var voyageData in shipData['danh_sach_chuyen_bien']) {
+          List<FishBatch> fishBatchList = [];
+          for (var fishBatchData in voyageData['danh_sach_me_ca']) {
+            List<FishData> fishDataList = [];
+            for (var fishData in fishBatchData['du_lieu_me_ca']) {
+              FishData fish = FishData(
+                fishType: fishData['ten_loai_ca'],
+                weight: fishData['khoi_luong'],
+              );
+              fishDataList.add(fish);
+            }
+            FishBatch fishBatch = FishBatch(
+              batchNumber: fishBatchData['me_ca'],
+              fishDataList: fishDataList,
+            );
+            fishBatchList.add(fishBatch);
           }
+          Voyage voyage = Voyage(
+            voyageNumber: voyageData['chuyen_bien_so'],
+            fishBatches: fishBatchList,
+          );
+          voyageList.add(voyage);
         }
-        result[item['so_hieu_tau']] = danhSachMeCa;
+        Ship ship = Ship(
+          shipCode: shipData['so_hieu_tau'],
+          voyages: voyageList,
+        );
+        shipList.add(ship);
       }
+      return shipList;
+    } else {
+      throw Exception('Failed to load ships');
     }
-
-    return result;
   }
 
-  void updateDanhSachMeCa() {
-    if (selectedOption1 != null && selectedOption3 != null) {
-      danhSachMeCa = options3[selectedOption1!]!.where((meCa) => meCa['me_ca'].toString() == selectedOption3!).toList();
-    }
+  DataTable buildFishDataTable(FishBatch fishBatch) {
+    return DataTable(
+      columns: [
+        DataColumn(label: Text('Loại cá')),
+        DataColumn(label: Text('Khối lượng (kg)')),
+      ],
+      rows: fishBatch.fishDataList
+          .map((fishData) => DataRow(
+        cells: [
+          DataCell(Text(fishData.fishType, style: TextStyle(fontSize: 17),)),
+          DataCell(Text(fishData.weight.toString(),style: TextStyle(fontSize: 17))),
+        ],
+      ))
+          .toList(),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
-
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        centerTitle: true,
-        backgroundColor: Colors.red,
-        title: Text(
-          'Nhật kí khai thác',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: screenSize.width * 0.06,
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          iconTheme: IconThemeData(color: Colors.white),
+          backgroundColor: Colors.red,
+          centerTitle: true,
+          title: Text(
+            'Nhật kí khai thác',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(screenSize.height * 0.018),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+        body: Container(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: Center(
+            child: FutureBuilder<List<Ship>>(
+              future: ships,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          'Số hiệu tàu:',
-                          style: TextStyle(fontSize: screenSize.width * 0.045),
+                        Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                DropdownButton<Ship>(
+                                  items: snapshot.data!
+                                      .map((ship) => DropdownMenuItem<Ship>(
+                                    value: ship,
+                                    child: Text("Tàu: " + ship.shipCode, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
+                                  ))
+                                      .toList(),
+                                  onChanged: (Ship? value) {
+                                    setState(() {
+                                      selectedShip = value;
+                                      selectedVoyage = value?.voyages.first;
+                                      showImage = false;; // Show the image when Ship is selected
+                                    });
+                                  },
+                                  hint: Text('Chọn tàu'),
+                                  value: selectedShip,
+                                ),
+                                SizedBox(height: 16),
+                                DropdownButton<Voyage>(
+                                  items: selectedShip?.voyages
+                                      .map((voyage) => DropdownMenuItem<Voyage>(
+                                    value: voyage,
+                                    child: Text('Chuyến biển ${voyage.voyageNumber}', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                                  ))
+                                      .toList() ??
+                                      [],
+                                  onChanged: (Voyage? value) {
+                                    setState(() {
+                                      selectedVoyage = value;
+                                      showImage = false; // Hide the image when Voyage is selected
+                                    });
+                                  },
+                                  hint: Text('Chọn chuyến biển'),
+                                  value: selectedVoyage,
+                                ),
+                              ],
+                            )
+                          ],
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(left: screenSize.width * 0.03),
-                          child: DropdownButton<String>(
-                            value: selectedOption1,
-                            onChanged: (String? value) {
-                              setState(() {
-                                selectedOption1 = value;
-                                selectedOption2 = '2';
-                                selectedOption3 = '1'; // Reset Mẻ cá to '1' when changing tàu
-                                updateDanhSachMeCa();
-                              });
-                            },
-                            items: options1.values
-                                .expand((element) => element)
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
+                        SizedBox(height: 30,),
+                        if (showImage) // Display image based on the showImage state
+                          Padding(
+                            padding: const EdgeInsets.only(left: 50.0, right: 50, bottom: 250),
+                            child: Image.asset('lib/assets/images/search_info.png'),
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: screenSize.height * 0.01,
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          'Chuyến biển: ',
-                          style: TextStyle(fontSize: screenSize.width * 0.045),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: screenSize.width * 0.03),
-                          child: Text(selectedOption2 ?? '1', style: TextStyle(fontSize: 16),),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                          left: screenSize.width * 0.04,
-                          bottom: screenSize.height * 0.05),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=> ChuyenTai()));
-                          // Navigate to ChuyenTai screen
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.red,
-                        ),
-                        child: Text(
-                          'Chuyển tải',
-                          style: TextStyle(
-                              fontSize: screenSize.width * 0.043,
-                              color: Colors.white),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: screenSize.height * 0.005,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          'Mẻ cá: ',
-                          style: TextStyle(fontSize: screenSize.width * 0.045),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: screenSize.width * 0.03),
-                          child: DropdownButton<String>(
-                            value: selectedOption3,
-                            onChanged: (String? value) {
-                              setState(() {
-                                selectedOption3 = value;
-                                updateDanhSachMeCa();
-                              });
-                            },
-                            items: options3[selectedOption1!]?.map<DropdownMenuItem<String>>((e) => DropdownMenuItem<String>(
-                              value: e['me_ca'].toString(),
-                              child: Text(e['me_ca'].toString()),
-                            )).toList() ?? [],
+                        if (selectedShip != null && selectedVoyage != null)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              for (var fishBatch in selectedVoyage!.fishBatches)
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Mẻ cá ${fishBatch.batchNumber}',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                                    SizedBox(height: 4),
+                                    buildFishDataTable(fishBatch),
+                                    SizedBox(height: 4),
+                                  ],
+                                ),
+                            ],
                           ),
-                        ),
+                        SizedBox(height: 16),
                       ],
                     ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Image.asset(
-                      'lib/assets/images/sort.png',
-                      width: screenSize.width * 0.06,
-                      height: screenSize.height * 0.06,
-                    ),
-                  ],
-                ),
-              ],
+                  );
+                }
+              },
             ),
-            SizedBox(height: screenSize.height * 0.005),
-            Container(
-              height: 1,
-              color: Colors.black,
-            ),
-            SizedBox(height: screenSize.height * 0.03),
-            Text('Thông tin mẻ cá', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
-            if (selectedOption3 != null)
-              Column(
-                children: danhSachMeCa
-                    .map((meCa) => Card(
-                  margin: EdgeInsets.all(8),
-                  child: Column(
-                    children: [
-                      Column(
-                        children: (meCa['du_lieu_me_ca'] as List<Map<String, dynamic>>)
-                            .map((duLieu) => ListTile(
-                          title: Text('${duLieu['ten_loai_ca']}: ${duLieu['khoi_luong']}'),
-                        ))
-                            .toList(),
-                      ),
-                    ],
-                  ),
-                ))
-                    .toList(),
-              ),
-          ],
+          ),
         ),
       ),
     );

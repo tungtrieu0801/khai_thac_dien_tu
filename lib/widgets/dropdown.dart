@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../models/boatModel.dart';
+
 class CustomDropdown extends StatelessWidget {
-  final List<String> items;
-  final String selectedValue;
-  final ValueChanged<String>? onChanged;
+  final List<Boat> items;
+  final Boat selectedValue;
+  final ValueChanged<Boat>? onChanged;
 
   const CustomDropdown({
     Key? key,
@@ -11,16 +13,16 @@ class CustomDropdown extends StatelessWidget {
     required this.selectedValue,
     this.onChanged,
   }) : super(key: key);
-//ok
+
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<String>(
+    return DropdownButton<Boat>(
       value: selectedValue,
-      onChanged: onChanged != null ? (String? value) => onChanged!(value!) : null,
-      items: items.map((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
+      onChanged: onChanged != null ? (Boat? value) => onChanged!(value!) : null,
+      items: items.map((Boat boat) {
+        return DropdownMenuItem<Boat>(
+          value: boat,
+          child: Text(boat.soHieuTau), // Display soHieuTau property
         );
       }).toList(),
       menuMaxHeight: 250,

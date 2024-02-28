@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../models/boatModel.dart';
+import '../../services/api_service.dart';
 import '../../widgets/PoliMap.dart';
 import '../../widgets/dropdown.dart';
 import '../../widgets/myButton.dart';
@@ -13,10 +15,29 @@ class TheoDoiHaiTrinh extends StatefulWidget {
 }
 
 class _TheoDoiHaiTrinhState extends State<TheoDoiHaiTrinh> {
+  ApiService apiService = ApiService();
+  List<Boat> listBoats = [];
+  String selectedBoatSoHieuTau = '';
   String selectedSoHieuTau = 'BĐ-29283';
   String selectedChuyenBien = '1';
   DateTime? _startDate1;
   DateTime? _startDate2;
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    apiService.fetchData((List<Boat> boats) {
+      setState(() {
+        listBoats = boats;
+        // Set the default selected boat if needed
+        selectedBoatSoHieuTau = listBoats.isNotEmpty ? listBoats[0].soHieuTau : '';
+
+      });
+    });
+  }
 
   Future<void> _selectStartDate1(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -120,11 +141,11 @@ class _TheoDoiHaiTrinhState extends State<TheoDoiHaiTrinh> {
                       Padding(
                         padding: EdgeInsets.only(left: screenSize.width * 0.03),
                         child: CustomDropdown(
-                          items: ['BĐ-29283', 'TÀU-12345', 'ABC-98765'],
-                          selectedValue: selectedSoHieuTau,
-                          onChanged: (String value) {
+                          items: listBoats,
+                          selectedValue: listBoats.firstWhere((boat) => boat.soHieuTau == selectedBoatSoHieuTau),
+                          onChanged: (Boat value) {
                             setState(() {
-                              selectedSoHieuTau = value;
+                              selectedBoatSoHieuTau = value.soHieuTau;
                             });
                           },
                         ),

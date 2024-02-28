@@ -9,7 +9,6 @@ class Boat {
   final String ngayDangKi;
   final String ngayHetHanDangKy;
 
-
   Boat({
     required this.soHieuTau,
     required this.thuyenTruong,
