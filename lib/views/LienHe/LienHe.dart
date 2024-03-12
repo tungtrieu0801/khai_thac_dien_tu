@@ -20,7 +20,6 @@ class _LienHeState extends State<LienHe> {
         title:  Text(
           'Liên hệ',
           style: TextStyle(color: Colors.white,fontWeight:FontWeight.bold,fontSize: screenSize.height*0.027),
-
         ),
       ),
       body: Center(
@@ -52,48 +51,40 @@ class _LienHeState extends State<LienHe> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.center, // Center horizontally
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Add the image here
                     Image.asset(
                       'lib/assets/images/img_contact.png',
-                      height: 200, // Adjust the height as needed
-                      width: 200, // Adjust the width as needed
+                      height: 200,
+                      width: 200,
                     ),
                     SizedBox(
                       height: screenSize.height * 0.01,
                     ),
-
                     Text(
                       "Công ty TNHH Công nghệ SmartRF Việt Nam",
                       style: TextStyle(fontSize: screenSize.height*0.021,fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center, // Center text
                     ),
-
                     SizedBox(
                       height: screenSize.height * 0.03,
                     ),
-
                     Text(
                       "Địa chỉ: 18 Hoàng Quốc Việt, Nghĩa Đô",
                       style: TextStyle(fontSize: screenSize.height*0.018),
                       textAlign: TextAlign.center, // Center text
                     ),
-
                     SizedBox(
                       height: screenSize.height * 0.004,
                     ),
-
                      Text(
                       "Cầu Giấy, Hà Nội ",
                       style: TextStyle(fontSize: screenSize.height*0.018),
                       textAlign: TextAlign.center, // Center text
                     ),
-
                     SizedBox(
                       height: screenSize.height * 0.028,
                     ),
-
                     Text(
                       "Hotline: 091356090",
                       style: TextStyle(
@@ -102,7 +93,7 @@ class _LienHeState extends State<LienHe> {
                         fontWeight: FontWeight.bold,
                         decoration: TextDecoration.underline,
                           decorationThickness: 2.0,
-                        decorationColor: Colors.blue// Thêm gạch chân
+                        decorationColor: Colors.blue
                       ),
                       textAlign: TextAlign.center,
                     ),

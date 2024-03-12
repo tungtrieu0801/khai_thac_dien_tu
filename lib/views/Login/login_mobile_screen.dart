@@ -73,7 +73,6 @@ class _MobileLoginLayoutState extends State<MobileLoginLayout> {
                       fontSize: 29,
                       fontWeight: FontWeight.w800,
                       color: bigTextColor,
-
                     ),
                   ),
                   SizedBox(
@@ -92,7 +91,6 @@ class _MobileLoginLayoutState extends State<MobileLoginLayout> {
                   SizedBox(
                     height: screenSize.height * 0.03,
                   ),
-
                   MyTextFieldpassword(
                     controller: passwordController,
                     hintText: "Nhập mật khẩu",
