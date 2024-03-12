@@ -49,7 +49,7 @@ class _NhatKiState extends State<NhatKi> {
   }
 
   Future<List<Ship>> fetchShips() async {
-    final response = await http.get(Uri.parse('https://tttn2024-production.up.railway.app/mobile-api/mining-log/'));
+    final response = await http.get(Uri.parse('http://nhatkydientu.vn/mobile-api/mining-log/'));
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = json.decode(response.body)['data'];
       List<Ship> shipList = [];

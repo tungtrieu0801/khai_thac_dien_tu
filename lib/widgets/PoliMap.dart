@@ -39,7 +39,7 @@ class _PolylineMapState extends State<PolylineMap> {
     fetchShipLocations();
   }
   Future<void> fetchShipLocations() async {
-    final response = await http.get(Uri.parse('https://tttn2024-production.up.railway.app/mobile-api/realtime-location/'));
+    final response = await http.get(Uri.parse('http://nhatkydientu.vn/mobile-api/realtime-location/'));
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       final List<dynamic> shipList = data['ship_list'];
