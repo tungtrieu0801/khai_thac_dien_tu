@@ -6,7 +6,7 @@ import '../models/boatModel.dart';
 class ApiService {
   Future<void> fetchData(Function(List<Boat>) onDataLoaded) async {
     final response = await http.get(Uri.parse(
-        'http://nhatkydientu.vn/mobile-api/realtime-location/'));
+        'https://nhatkydientu.vn/mobile-api/realtime-location/'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = json.decode(response.body)['ship_list'];

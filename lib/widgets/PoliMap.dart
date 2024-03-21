@@ -39,7 +39,7 @@ class _PolylineMapState extends State<PolylineMap> {
     fetchShipLocations();
   }
   Future<void> fetchShipLocations() async {
-    final response = await http.get(Uri.parse('http://nhatkydientu.vn/mobile-api/realtime-location/'));
+    final response = await http.get(Uri.parse('https://nhatkydientu.vn/mobile-api/realtime-location/'));
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       final List<dynamic> shipList = data['ship_list'];
@@ -69,7 +69,7 @@ class _PolylineMapState extends State<PolylineMap> {
         polylines: _createPolylines(),
         initialCameraPosition: CameraPosition(
           target: LatLng(14.0583, 108.2772),
-          zoom: 6.0,
+          zoom: 7.0,
         ),
       ),
     );
@@ -274,7 +274,7 @@ class _PolylineMapState extends State<PolylineMap> {
             height: 200,
             child: DataTable(
               columns: [
-                DataColumn(label: Text('Thuộc tính')),
+                DataColumn(label: Text('Chi tiết')),
                 DataColumn(label: Text('Thông tin')),
               ],
               rows: [
@@ -283,7 +283,7 @@ class _PolylineMapState extends State<PolylineMap> {
                   DataCell(Text(nameship)),
                 ]),
                 DataRow(cells: [
-                  DataCell(Text('Tên thuyền trưởng')),
+                  DataCell(Text('Thuyền trưởng')),
                   DataCell(Text(namethuyen)),
                 ]),
                 DataRow(cells: [
@@ -299,7 +299,7 @@ class _PolylineMapState extends State<PolylineMap> {
           ),
           actions: [
             Padding(
-              padding: const EdgeInsets.only(top: 18.0),
+              padding: const EdgeInsets.only(top: 16.0),
               child: TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(); //
